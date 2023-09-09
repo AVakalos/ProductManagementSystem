@@ -19,6 +19,11 @@ import org.springframework.stereotype.Service;
 import com.apostolis.spms.model.RegisterDTO;
 import com.apostolis.spms.model.Role;
 
+/*
+Custom implementation for:
+    1. Loading user information from the database.
+    2. Storing a new user to database.
+*/
 
 @Service
 public class AppUserDetailsServiceImpl implements AppUserDetailsService {

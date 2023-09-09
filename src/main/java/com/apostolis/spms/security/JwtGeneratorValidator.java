@@ -29,14 +29,16 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+// This class does the management of the JWT Token
 
 @Component
 public class JwtGeneratorValidator {
     @Autowired
 	AppUserDetailsService userDetailsService;
-	
-    private final String SECRET = "sfdghtuhgruitjkkourijkldjlifgjdfuiryuytukhg";
 
+	private final int EXPIRE_IN_MINUTES = 10;
+    private final String SECRET = "sfdghtuhgruitjkkourijkldjlifgjdfuiryuytukhg";
+    
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -45,10 +47,7 @@ public class JwtGeneratorValidator {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
-    
-    public Claims extractUserRole(String token) {
-        return extractAllClaims(token);
-    }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
@@ -72,13 +71,13 @@ public class JwtGeneratorValidator {
 
     private String createToken(Map<String, Object> claims, Authentication authentication) {
     	Set<String> roles =authentication.getAuthorities().stream()
-        .map(r -> r.getAuthority()).collect(Collectors.toSet());        //.iterator().next();        
+        .map(r -> r.getAuthority()).collect(Collectors.toSet());
 
 
         return Jwts.builder().claim("roles",roles.toArray(String[]::new))
                 .setSubject(authentication.getName())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(EXPIRE_IN_MINUTES)))
                 .signWith(getSignInKey(),SignatureAlgorithm.HS256).compact();
     }
 
@@ -89,7 +88,7 @@ public class JwtGeneratorValidator {
         return validated;
     }
     
-    // Extract authorities from token and include them with the userDetails in the returned object
+    // Create authentication token for the Spring Security authentication mechanism.
     public UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final Authentication existingAuth, final UserDetails userDetails) {
 
         Claims claims = extractAllClaims(token);

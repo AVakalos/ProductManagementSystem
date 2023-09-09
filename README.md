@@ -85,7 +85,7 @@ Sign in providing the credentials in a new POST request to the http://localhost:
 After the succesfull login you will be given a token which you will need to provide in the next http requests to access the CRUD endpoints.
 
 #### 3. Perform an operation ####
-For example as a USER you can add a new product to the system. Send a POST request with the product details an the token in the Authorization tab as a Bearer token.
+For example as a USER you can add a new product to the system. Send a POST request to the http://localhost:8080/api/v1/products endpoint with the product details an the token in the Authorization tab as a Bearer token.
 ![Add Product](<README images/Add a new product.png>)
 
 ![Token](<README images/token.png>)

@@ -48,14 +48,15 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/api/auth/**")
-                                .permitAll()
-								//.requestMatchers("/welcome").hasAuthority("USER")
-                                .anyRequest().authenticated()
+                                 .permitAll()
+                                 .anyRequest()
+								 .authenticated()
         );
         
         http.sessionManagement((session) -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+		// Put the JWTAuthFilter inthe filter chain
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}

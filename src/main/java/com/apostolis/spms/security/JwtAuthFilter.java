@@ -18,6 +18,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+// Definition of filter that is used in every incoming request to authenticate the user by the JWT token.
+
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -41,19 +43,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				userName = jwtgenVal.extractUsername(token);
 			}
 
+			// If JWT token is valid authenticate the user and update the SecurityContextHolder object.
 			if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-
-				// If JWT token is valid create usernamePasswordAuthenticationToken from the token and userDetails and update the SecurityContextHolder object.
+	
 				if (jwtgenVal.validateToken(token, userDetails)) {
 
+					// Spirng security authentication token using userDetails and JWT token information.
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
 						jwtgenVal.getAuthenticationToken(token, SecurityContextHolder.getContext().getAuthentication(), userDetails);
 					
 					// Include details from the request
 					usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-					
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 				}
 			}
@@ -61,6 +63,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		}catch(ExpiredJwtException e){
 			System.out.println(e.getMessage());
 		}
+
 		filterChain.doFilter(request, response);
 	}
     

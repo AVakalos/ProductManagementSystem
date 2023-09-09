@@ -39,6 +39,7 @@ public class AuthController {
 	@Autowired
 	AppUserDetailsService userService;
 
+    // User sign in to system
     @PostMapping("/signin")
     public ResponseEntity<Object> authenticateUser(@RequestBody LoginDTO loginDTO){
         try{
@@ -59,28 +60,28 @@ public class AuthController {
         }
     }
 
+    // Register new user
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@RequestBody RegisterDTO registerDTO){
         try{
-            // add check for username exists in a DB
+            // Check if username exists in a DB
             if(userRepository.existsByUsername(registerDTO.getUsername())){
                 return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
             }     
-            // add check for email exists in DB
+            // Check if email exists in DB
             if(userRepository.existsByEmail(registerDTO.getEmail())){
                 return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
             }
 
             User newUser =  userService.save(registerDTO);
+
             if (newUser.equals(null))
-                return CustomHttpResponse.generateRespose("Not able to save user ", HttpStatus.BAD_REQUEST, registerDTO);
+                return CustomHttpResponse.generateRespose("Not able to save user.", HttpStatus.BAD_REQUEST, registerDTO);
             else
                 return CustomHttpResponse.generateRespose("User saved successfully with id : " + newUser.getId(), HttpStatus.OK, newUser);
 
         }catch(Exception e){
             return CustomHttpResponse.generateRespose(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "Could not register");
         }
-    }
-
-    
+    }  
 }
