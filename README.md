@@ -3,7 +3,7 @@
 ## Description
 The Product Management System project is the Back End of a secure web application for managing products with REST API inluding user register and login features. With Role-Based authorization integration the product management is performed according to the authorization level of the user. The users interact with the system only through REST endpoints.
 
----
+
 
 ## Features
 #### 1. Secure user registration and login.
@@ -32,7 +32,7 @@ The only way for the user to interact with the system is through REST endpoints.
 - Update details of a specific product by Id.
 - Delete a product by Id.
 
----
+
 ## Tech Stack
 The project is implemented on Spring Boot 3 Java framework and the PostgreSQL database. The project depedencies are listed below:
 
@@ -59,36 +59,36 @@ com.apostolis.spms  # Root package
 
 #### Database schema:
 
-![Database Schema](<Database Schema-1.png>)
+![Database Schema](<README images/Database Schema-1.png>)
 The database design implements a many-to-many relationship between the entities *User* and *Role* allowing a user to have many roles and a role to be assigned to many users. The table user_roles keeps the infomation about the role assignment to users. Also the columns *email* and *username* are constrained to be unique.
 
 #### Security mechanism
 The security mechanism to secure the REST endpoints of the appication is the JSON Web Token Security and is depicted in the diagram below. When a user is successfully logged in, the system generates a signed token with the user identity and roles with expiration time after 10 minutes and returns it in the HTTP response to the user. A filter (JwtAuthFilter) for every incoming HTTP request is implemented which allows access to the secured REST endpoints only if the HTTP Request contains a valid token of previously authenticated (signed in) user. The validation procedure takes the user information form User Details Service and the token information and checks if the token is valid (not expired and not changed). The authorization checking is performed on method level in the Controller for every CRUD (Create Read Update Delete) operation. If the token is expired the user must re-login and use the new token.
 
-![JWT Security Schema](<JWT Security Schema.png>)
+![JWT Security Schema](<README images/JWT Security Schema.png>)
 
----
+
 ## How to install
 Clone this repository to your computer and connect a new Postgres database configuring the url, username and password in the *src/main/resources/application.properties* file. All the depedencies will be downloaded automatically.
 
----
+
 ## How to use the application
 
 #### 1. Register as new user ####
 
 To start using the application you must register as a user sending a POST request to the http://localhost:8080/api/auth/signup endpoint providing the username, email and password in the request body as shown below.
-![Register](register.png)
+![Register](<README images/register.png>)
 
 #### 2. Sign in ####
 Sign in providing the credentials in a new POST request to the http://localhost:8080/api/auth/signin endpoint. You can use either email or username.
-![Login](login.png). 
+![Login](<README images/login.png>) 
 After the succesfull login you will be given a token which you will need to provide in the next http requests to access the CRUD endpoints.
 
 #### 3. Perform an operation ####
 For example as a USER you can add a new product to the system. Send a POST request with the product details an the token in the Authorization tab as a Bearer token.
-![Add Product](<Add a new product.png>)
+![Add Product](<README images/Add a new product.png>)
 
-![Token](token.png)
+![Token](<README images/token.png>)
 
 #### Token is Expired ####
 After 10 minutes of its creation time the JWT token expires and it can no longer be used. To continue to interact with the system you must login again and use the new generated token.
@@ -96,7 +96,7 @@ After 10 minutes of its creation time the JWT token expires and it can no longer
 ## Credits
 In the development process of this project I had valuable help from these tutorials:
 
-https://www.youtube.com/watch?v=BMbfL75mXyc&list=LL
-https://www.youtube.com/watch?v=VVn9OG9nfH0&list=LL&index=3&t=6846s
-https://www.youtube.com/watch?v=KxqlJblhzfI&list=LL&index=5&t=270s
-https://www.youtube.com/watch?v=R76S0tfv36w&list=LL&index=4
+- https://www.youtube.com/watch?v=BMbfL75mXyc&list=LL
+- https://www.youtube.com/watch?v=VVn9OG9nfH0&list=LL&index=3&t=6846s
+- https://www.youtube.com/watch?v=KxqlJblhzfI&list=LL&index=5&t=270s
+- https://www.youtube.com/watch?v=R76S0tfv36w&list=LL&index=4
