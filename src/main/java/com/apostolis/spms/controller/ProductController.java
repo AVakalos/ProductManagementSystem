@@ -46,9 +46,10 @@ public class ProductController {
             Map<String, Object> response = new HashMap<>();
             response.put("products", retrievedProducts);
             response.put("currentPage", retrievedProductsPage.getNumber()+1);
+            response.put("productsInPage",retrievedProductsPage.getNumberOfElements());
             response.put("totalItems", retrievedProductsPage.getTotalElements());
             response.put("totalPages", retrievedProductsPage.getTotalPages());
-            return CustomHttpResponse.generateRespose("Retrieve products in pages", HttpStatus.OK, response);
+            return CustomHttpResponse.generateRespose("Max products per page: "+size, HttpStatus.OK, response);
         }catch(Exception e){
              return CustomHttpResponse.generateRespose(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "Can not retrieve products.");
         }
