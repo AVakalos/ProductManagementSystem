@@ -6,5 +6,5 @@ import com.apostolis.spms.model.User;
 import com.apostolis.spms.model.RegisterDTO;
 
 public interface AppUserDetailsService extends UserDetailsService{
-    User save(RegisterDTO userRegisteredDTO);
+    User saveNewUser(RegisterDTO userRegisteredDTO);
 }

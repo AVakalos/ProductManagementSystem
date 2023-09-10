@@ -73,7 +73,7 @@ public class AuthController {
                 return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
             }
 
-            User newUser =  userService.save(registerDTO);
+            User newUser =  userService.saveNewUser(registerDTO);
 
             if (newUser.equals(null))
                 return CustomHttpResponse.generateRespose("Not able to save user.", HttpStatus.BAD_REQUEST, registerDTO);

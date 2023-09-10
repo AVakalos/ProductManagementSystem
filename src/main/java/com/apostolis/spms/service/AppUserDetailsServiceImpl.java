@@ -54,7 +54,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService {
     }
 
     @Override
-    public User save(RegisterDTO registeredUserDTO){
+    public User saveNewUser(RegisterDTO registeredUserDTO){
 		User user = new User();
 		user.setUsername(registeredUserDTO.getUsername());
         user.setEmail(registeredUserDTO.getEmail());

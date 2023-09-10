@@ -6,8 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,14 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.apostolis.spms.Exception.ResourceNotFoundException;
 import com.apostolis.spms.model.CustomHttpResponse;
 import com.apostolis.spms.model.Product;
-import com.apostolis.spms.repository.ProductRepository;
+import com.apostolis.spms.service.ProductServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/v1/")
 public class ProductController {
+
     @Autowired
-	private ProductRepository productRepository;
+    private ProductServiceImpl productService;
 
     // Get all products in pages
     @GetMapping("/products")
@@ -40,8 +39,7 @@ public class ProductController {
     public ResponseEntity<Object> getAllProducts(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "20") int size){
         try{
-            Pageable paging = PageRequest.of(page, size);                                            
-            Page<Product> retrievedProductsPage = productRepository.findAll(paging);
+            Page<Product> retrievedProductsPage = productService.getProductsInPage(page, size);
             List<Product> retrievedProducts = retrievedProductsPage.getContent();
             Map<String, Object> response = new HashMap<>();
             response.put("products", retrievedProducts);
@@ -60,7 +58,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Object> createProduct(@RequestBody Product product){
         try{
-            Product savedProduct = productRepository.save(product);
+            Product savedProduct = productService.createProduct(product);
             return CustomHttpResponse.generateRespose("Saved product", HttpStatus.CREATED, savedProduct);
         }catch(Exception e){
             return CustomHttpResponse.generateRespose(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "Product not saved.");
@@ -72,7 +70,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Object> getProductById(@PathVariable Long id) {
         try{
-            Product retievedProduct = productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not exist with id: "+id));
+            Product retievedProduct = productService.getProductById(id);
             return CustomHttpResponse.generateRespose("Retrieved product with id "+id, HttpStatus.OK, retievedProduct);
             
         }catch(ResourceNotFoundException r){
@@ -84,12 +82,8 @@ public class ProductController {
     @PutMapping("/products/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Object> updateProduct(@PathVariable Long id, @RequestBody Product productDetails){
-        try{
-            Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not exist with id: "+id));
-            product.setName(productDetails.getName());
-            product.setDescription(productDetails.getDescription());
-            product.setPrice(productDetails.getPrice());  
-            Product updatedProduct = productRepository.save(product); 
+        try{ 
+            Product updatedProduct = productService.updateProduct(id, productDetails);
             return CustomHttpResponse.generateRespose("Product with id "+id+" updated", HttpStatus.OK, updatedProduct);
 
         }catch(ResourceNotFoundException r){
@@ -102,9 +96,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Object> deleteProduct(@PathVariable Long id){
         try{
-            Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not exist with id: "+id));
-
-            productRepository.delete(product);
+            productService.deleteProduct(id);
             Map<String, Boolean> response = new HashMap<>();
             response.put("deleted",Boolean.TRUE);
             return CustomHttpResponse.generateRespose("Product with id: "+id+" deleted", HttpStatus.OK, response);
