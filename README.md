@@ -11,10 +11,10 @@ A new user can register providing username, email and password. The password wil
 
 #### 2. Role-Based Authorization.
 A Role-Based Authorization policy is implemented with two possible roles USER and ADMIN. A user can take both roles and adding more roles in the future can be easily done. The perimissions of each role is defined as follows:
-- ##### USER #####
+- ##### USER 
     1. View products.
     2. Add new product.
-- ##### ADMIN #####
+- ##### ADMIN
     1. Update product details.
     2. Delete product.
 
@@ -32,6 +32,8 @@ The only way for the user to interact with the system is through REST endpoints.
 - Update details of a specific product by Id.
 - Delete a product by Id.
 
+## REST API Documentation
+Click [here](https://documenter.getpostman.com/view/29541731/2s9YC1XEmP) to view the documentation with examples.
 
 ## Tech Stack
 The project is implemented on Spring Boot 3 Java framework and the PostgreSQL database. The project depedencies are listed below:
@@ -74,23 +76,23 @@ Clone this repository to your computer and connect a new Postgres database confi
 
 ## How to use the application
 
-#### 1. Register as new user ####
+#### 1. Register as new user 
 
 To start using the application you must register as a user sending a POST request to the http://localhost:8080/api/auth/signup endpoint providing the username, email and password in the request body as shown below.
 ![Register](<README images/register.png>)
 
-#### 2. Sign in ####
+#### 2. Sign in
 Sign in providing the credentials in a new POST request to the http://localhost:8080/api/auth/signin endpoint. You can use either email or username.
 ![Login](<README images/login.png>) 
 After the succesfull login you will be given a token which you will need to provide in the next http requests to access the CRUD endpoints.
 
-#### 3. Perform an operation ####
+#### 3. Perform an operation
 For example as a USER you can add a new product to the system. Send a POST request to the http://localhost:8080/api/v1/products endpoint with the product details an the token in the Authorization tab as a Bearer token.
 ![Add Product](<README images/Add a new product.png>)
 
 ![Token](<README images/token.png>)
 
-#### Token is Expired ####
+#### Token is Expired
 After 10 minutes of its creation time the JWT token expires and it can no longer be used. To continue to interact with the system you must login again and use the new generated token.
 
 ## Credits
